@@ -49,10 +49,16 @@ def main():
             counter -= 1
 
     url = url1 + curr_string + url2 + curr_id_string  # url string built here
-    print(url)
 
     request = requests.get(url)  # request data from api
     exchange_rates_dict = json.loads(request.text)  # load json as string into python dictionary
+
+    # save path of json file
+    exchange_rates_json_file_path = "./data/exchange_rates.json"
+
+    # dump the dictionary into the json file
+    with open(exchange_rates_json_file_path, "w") as json_file:
+        json.dump(exchange_rates_dict, json_file)
 
     # create rates 2-D list to be used to store the exchange rates
     rates = []
@@ -76,8 +82,6 @@ def main():
         
         # append the rate_row to the rates list
         rates.append(rate_row)
-
-    print(rates)
             
     # current directory
     curr_dir = os.path.dirname(__file__)
@@ -89,23 +93,13 @@ def main():
     edges = []
     i = 0
 
-    # for c1 in currencies:
-    #     j = 0
-    #     for c2 in currencies:
-    #         # if c1 and c2 are not the same and the rate to convert is not None (both for to and from possibilities)
-    #         if c1 != c2 and rates[i][j] is not None and rates[j][i] is not None:
-    #             edges.append((c1, c2, rates[i][j]))
-    #             print("adding edge:", c1, c2, rates[i][j])
-    #         j += 1
-    #     i += 1
-
     # go through currency combinations and append them to edges
     for i, c1 in enumerate(currencies):
         for j, c2 in enumerate(currencies):
             # if c1 and c2 are not the same and the rate to convert is not None (both to and from possibilities)
             if i != j and rates[i][j] is not None and rates[j][i] is not None:
                 edges.append((c1, c2, rates[i][j]))
-                print("adding edge:", c1, c2, rates[i][j])
+                # print("adding edge:", c1, c2, rates[i][j])
 
 
     g.add_weighted_edges_from(edges)
