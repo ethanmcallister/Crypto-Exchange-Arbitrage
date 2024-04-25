@@ -1,0 +1,1 @@
+https://api.coingecko.com/api/v3/simple/price?ids=aave,avalanche,bitcoin-cash,basic-attention-token,litecoin,ethereum,bitcoin,curve-dao-token,polkadot,the-graph,chainlink,maker,shiba-inu,uniswap,tezos&vs_currencies=aave,avax,bch,bat,ltc,eth,btc,crv,dot,grt,link,mkr,shib,uni,xtz
