@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from itertools import permutations, combinations
 import json
 import requests
+from datetime import datetime
 
 
 def main():
@@ -54,7 +55,7 @@ def main():
     exchange_rates_dict = json.loads(request.text)  # load json as string into python dictionary
 
     # save path of json file
-    exchange_rates_json_file_path = "./data/exchange_rates.json"
+    exchange_rates_json_file_path = "./data/json_data/exchange_rates.json"
 
     # dump the dictionary into the json file
     with open(exchange_rates_json_file_path, "w") as json_file:
@@ -101,6 +102,16 @@ def main():
                 edges.append((c1, c2, rates[i][j]))
                 # print("adding edge:", c1, c2, rates[i][j])
 
+                # write currency pair to text file (csv) with currency_pair_YYYY.MM.DD:HH.MM.txt as the file name
+                now = datetime.now()
+                name_1 = f"./data/currency_pair_data/currency_pair_"
+                name_2 = now.strftime("%Y.%m.%d-%H.%M.txt")
+                file_name = name_1 + name_2
+                text = f"{c1},{c2},{rates[i][j]},"
+
+                # write the currency pair data to the csv txt file
+                with open(file_name, "a") as csv_file:
+                    csv_file.write(text + "\n")
 
     g.add_weighted_edges_from(edges)
     print()
