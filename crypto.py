@@ -7,11 +7,53 @@ from itertools import permutations, combinations
 import json
 import requests
 from datetime import datetime
+import alpaca_trade_api as api
+
+BASE_URL = "https://paper-api.alpaca.markets"
+KEY_ID = "PK914CBGHAJZBKQP8NMK"
+SECRET_KEY = "3hDTujilOcjR1r2DhWB4Y6lP9AxMGkvIcNfLOBdd"
+
+
+def make_alpaca_orders(path_list):
+
+    # initialize the alpaca api
+    alpaca = api.REST(key_id=KEY_ID, secret_key=SECRET_KEY, base_url=BASE_URL)
+
+    usd_symbols = []
+    
+    # concatenate full symbol with USD at end
+    for curr in path_list:
+        symbol = curr.upper() + 'USD'
+        usd_symbols.append(symbol)
+
+        # buy and sell from each currency in the arbitrage chain
+    for i in range(len(usd_symbols)):
+
+        # order data
+        symbol = usd_symbols[i]
+        qty = '1'
+        side = 'buy'
+        type = 'market'
+        time_in_force = 'gtc'
+
+        # buy crypto
+        order = alpaca.submit_order(symbol=symbol, qty=qty, side=side, type=type, time_in_force=time_in_force)
+        print(f"buying {usd_symbols[i]}")
+
+        # sell cypto
+        side = 'sell'
+        order = alpaca.submit_order(symbol=symbol, qty=qty, side=side, type=type, time_in_force=time_in_force)
+        print(f"selling {usd_symbols[i]}\n")
+
+    # account/account balance
+    account = alpaca.get_account()
+    account_cash = float(account.cash)
+    print(f"\nBalance: {account_cash}")
 
 
 def main():
     
-    # currencies/rates data
+    # currencies/rates data (I removed polkadot and chainlink because placing their orders didn't seem to work with alpaca)
     currencies = {
         "aave": "aave", 
         "avalanche-2": "avax", 
@@ -21,9 +63,9 @@ def main():
         "ethereum": "eth", 
         "bitcoin": "btc",
         "curve-dao-token": "crv",
-        "polkadot": "dot",
+        # "polkadot": "dot",
         "the-graph": "grt",
-        "chainlink": "link",
+        # "chainlink": "link",
         "maker": "mkr",
         "shiba-inu": "shib",
         "uniswap": "uni",
@@ -192,6 +234,14 @@ def main():
     # print the greathest paths weight factor
     print("Greatest Paths weight factor:", max_weight_factor_value)
     print("Paths:", list(max_weight_factor_key[0]), list(max_weight_factor_key[1]))
+
+    # iterate through list of max_weight_factor_key, see if each item is in currencies, if so set each item to be the value
+    greatest_wf_path = [currencies[symbol] for symbol in list(max_weight_factor_key[0])]
+
+    # if the max_weight_factor_value is greater than 1, make crypto orders with alpaca
+    if max_weight_factor_value > 1:
+        print()  # add space for terminal formatting
+        make_alpaca_orders(greatest_wf_path)
 
 
 main()
