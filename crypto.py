@@ -172,7 +172,7 @@ def main():
     weight_factor_dict = {}
 
     # iterate through all the possible combinations nodes 
-    for n1, n2 in combinations(g.nodes, 2):
+    for n1, n2 in permutations(g.nodes, 2):
         print("All paths from", n1, "to", n2, "-------------------------------------------------------------")
 
         # for each path in all simple paths, calculate the weight to and from...
