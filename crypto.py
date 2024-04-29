@@ -280,7 +280,7 @@ def main():
         purchase_history_list, alpaca_balance = make_alpaca_orders(greatest_wf_path)
     
     # add purchase history and balance to results dictionary
-    purchases_key = "Purchases"
+    purchases_key = "Transactions"
     balance_key = "Balance"
     results_dict[purchases_key] = purchase_history_list
     results_dict[balance_key] = alpaca_balance
