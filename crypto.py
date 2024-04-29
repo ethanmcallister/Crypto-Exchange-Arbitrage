@@ -282,15 +282,20 @@ def main():
     # add purchase history and balance to results dictionary
     purchases_key = "Transactions"
     balance_key = "Balance"
-    results_dict[purchases_key] = purchase_history_list
-    results_dict[balance_key] = alpaca_balance
-    
-    # save path of json file
-    results_json_file_path = curr_dir + "/results.json"
 
-    # dump the dictionary into the json file
-    with open(results_json_file_path, "w") as json_file:
-        json.dump(results_dict, json_file) 
+    try: 
+        results_dict[purchases_key] = purchase_history_list
+        results_dict[balance_key] = alpaca_balance
+        
+        # save path of json file
+        results_json_file_path = curr_dir + "/results.json"
+
+        # dump the dictionary into the json file
+        with open(results_json_file_path, "w") as json_file:
+            json.dump(results_dict, json_file) 
+    
+    except UnboundLocalError:
+        print("No transactions made since no path exists with a weight > 1...")
 
 
 main()
